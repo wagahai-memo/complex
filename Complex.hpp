@@ -25,8 +25,27 @@ public:
   //コンストラクタ。要素型のコピーコンストラクタがnoexceptならnoexcept。
   constexpr Complex(T r) noexcept(noexcept(T(T(0)))) : real(r) {}
   constexpr Complex(T r, T i) noexcept(noexcept(T(T(0)))) : real(r), imag(i) {}
-  //コピーコンストラクタ。
-  constexpr Complex(const Complex& other) noexcept = default;
+
+  //デストラクタ。
+  ~Complex() = default;
+  //コピーコンストラクタとムーブコンストラクタ。
+  constexpr Complex(const Complex& other) noexcept(noexcept(T(T(0)))) = default;
+  //constexpr Complex(Complex&& other) noexcept = default;
+
+
+public:
+  //------------------------------
+  //
+  //  コピー代入演算子
+  //
+  //------------------------------
+  constexpr Complex& operator =(const Complex& other) & noexcept {
+    Complex<T> tmp(other);
+    swap(tmp);
+    return *this;
+  }
+
+  constexpr Complex&& operator =(const Complex& other) && noexcept = delete;
 
 
 public:
@@ -41,6 +60,19 @@ public:
 
   constexpr bool operator !=(const Complex& rhs) const {
     return !(*this == rhs);
+  }
+
+
+private:
+  //------------------------------
+  //
+  //  swap関数
+  //
+  //------------------------------
+  void swap(Complex& other) noexcept {
+    using std::swap;
+    swap(real, other.real);
+    swap(imag, other.imag);
   }
 
 
